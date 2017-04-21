@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="flipkart1.css" type="text/css" rel="stylesheet">
+
+</head>
+<body>
+
+
+<div class="container" >
+
+    <div class="logo">
+        <img src="flipkart_logo_detail.jpg" height="100" width="400" align="center">
+        <input type="text" class="searchbox" placeholder="Search for Products,Brands and more" >
+        <button id="searchbutton">Search</button>
+    </div>
+
+    <div class="cart">
+        <form action="#">
+            <button id="cartbutton" onclick="openNav()"><img src="shopping-cart-512.jpg" id="cartimage" width="25" height="25"/> CART
+                <span id="count"> 0 </span>
+            </button>
+        </form>
+    </div>
+</div>
+
+
+<div class="body">
+        <span class="products">
+            <img src="google-pixel-xl.jpg" alt="mobile" class="mobile" >
+            <button id="libutton">Add toCart</button>
+            <img src="apple-watch-sport-42mm2.jpg" class="mobile" width="160" height="212">
+            <button onclick="addToCart(this.previousSibling.previousSibling.currentSrc);refreshCart();">Add toCart</button>
+            <img src="apple-iphone-7r4.jpg" class="mobile">
+            <button onclick="addToCart(this.previousSibling.previousSibling.currentSrc);refreshCart();">Add toCart</button>
+            <img src="lenovo-k5.jpg" class="mobile">
+            <button onclick="addToCart(this.previousSibling.previousSibling.currentSrc);refreshCart();">Add toCart</button>
+            <img src="motorola-moto-g4-plus-r.jpg" class="mobile">
+            <button onclick="addToCart(this.previousSibling.previousSibling.currentSrc);refreshCart();">Add toCart</button>
+        </span>
+    <span class="products">
+            <img src="samsung-galaxy-note7.jpg" class="mobile">
+            <button onclick="addToCart(this.previousSibling.previousSibling.currentSrc);refreshCart();">Add toCart</button>
+            <img src="samsung-galaxy-s8-r1.jpg" class="mobile">
+            <button onclick="addToCart(this.previousSibling.previousSibling.currentSrc);refreshCart();">Add toCart</button>
+            <img src="oneplus-3t-.jpg" class="mobile">
+            <button onclick="addToCart(this.previousSibling.previousSibling.currentSrc);refreshCart();">Add toCart</button>
+            <img src="lg-g4-.jpg" class="mobile">
+            <button onclick="addToCart(this.previousSibling.previousSibling.currentSrc);refreshCart();">Add toCart</button>
+    </span>
+</div>
+
+<div id="myNav" class="overlay">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    <div id="overlay-content">
+
+    </div>
+    <input type="button" value="Checkout" id="checkoutbutton">
+</div>
+
+<script src="flipkart.js" type="text/javascript"></script>
+</body>
+</html>
