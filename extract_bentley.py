@@ -216,9 +216,76 @@ def extract_data():
     return data
 
 
+def diagnose_excel(excel_file="IPEDS Bentley University.xlsx"):
+    """Dump the structure of every sheet so you can see exactly where each variable sits."""
+    if not os.path.exists(excel_file):
+        print(f"ERROR: File '{excel_file}' not found in {os.getcwd()}")
+        print(f"Files here: {os.listdir('.')}")
+        return
+
+    xls = pd.ExcelFile(excel_file)
+    print(f"\nFile: {excel_file}")
+    print(f"Sheets found: {xls.sheet_names}\n")
+    print("=" * 80)
+
+    # Keywords we're looking for and which sheet they should be in
+    search_targets = {
+        "Graduation rate": "Graduation Rate (col 2 = 6-year rate)",
+        "Retention rates": "Retention Rate (col 1)",
+        "Pell grant recipients": "Pell Graduation Rate (col 1, +1 row offset)",
+        "All instructional staff total": "Faculty Salaries (col 1)",
+        "Core expenses per FTE": "Financial Resources (rows below this header)",
+        "Instruction": "Financial Resources component",
+        "Research": "Financial Resources component",
+        "Student services": "Financial Resources component",
+        "Institutional support": "Financial Resources component",
+        "Instructional Staff": "Full-Time Faculty (cols 1 & 2)",
+        "Math": "SAT Math scores (cols 1 & 3 = 25th/75th percentile)",
+        "Evidence-Based": "SAT EBRW scores (cols 1 & 3 = 25th/75th percentile)",
+    }
+
+    for sheet_name in xls.sheet_names:
+        df = pd.read_excel(excel_file, sheet_name=sheet_name, header=None)
+        print(f"\n--- Sheet: '{sheet_name}' ({df.shape[0]} rows x {df.shape[1]} cols) ---\n")
+
+        # Print first 5 rows to show header structure
+        print("  First 5 rows:")
+        for idx in range(min(5, len(df))):
+            row_vals = [str(df.iloc[idx, c])[:40] for c in range(min(df.shape[1], 6))]
+            print(f"    Row {idx}: {' | '.join(row_vals)}")
+
+        # Search for our target keywords
+        print(f"\n  Keyword search results:")
+        found_any = False
+        for keyword, description in search_targets.items():
+            mask = df.iloc[:, 0].astype(str).str.contains(keyword, case=False, na=False)
+            if mask.any():
+                found_any = True
+                for row_idx in df[mask].index:
+                    row_vals = []
+                    for c in range(min(df.shape[1], 6)):
+                        row_vals.append(f"col{c}={df.iloc[row_idx, c]}")
+                    print(f"    FOUND '{keyword}' at row {row_idx} -> {description}")
+                    print(f"      Values: {' | '.join(row_vals)}")
+
+        if not found_any:
+            print("    (no target keywords found in this sheet)")
+
+    print("\n" + "=" * 80)
+    print("DONE. Use the row/column info above to verify extract_bentley.py mappings.")
+
+
 if __name__ == "__main__":
-    print()
-    results = extract_data()
-    print("\n--- RESULTS ---\n")
-    for key, value in results.items():
-        print(f"  {key:<35}: {value}")
+    import sys
+
+    if len(sys.argv) > 1 and sys.argv[1] == "--diagnose":
+        # Run: python extract_bentley.py --diagnose
+        file_arg = sys.argv[2] if len(sys.argv) > 2 else "IPEDS Bentley University.xlsx"
+        diagnose_excel(file_arg)
+    else:
+        # Normal extraction
+        print()
+        results = extract_data()
+        print("\n--- RESULTS ---\n")
+        for key, value in results.items():
+            print(f"  {key:<35}: {value}")
